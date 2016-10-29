@@ -1,9 +1,11 @@
 package Geyang;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -150,6 +152,30 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			//
 		}
 		return false;
+	}
+	
+	public byte[] signRandomString(int jLabel){
+		RandomString rsGenarator = new RandomString(32);
+		String rs = rsGenarator.nextString();
+		String message = rs + this.label + jLabel;
+		Signature sign = null;
+		byte[] digest = null;
+		byte[] res = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			sign = Signature.getInstance("SHA1withRSA");
+			sign.initSign(this.privateKey);
+			md.update(message.getBytes("UTF-8"));
+			digest = md.digest();
+			
+			sign.update(digest);
+			res = sign.sign();
+//				return sign;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 }
