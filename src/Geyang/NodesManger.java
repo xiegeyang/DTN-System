@@ -140,7 +140,7 @@ public class NodesManger {
 		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(1);
 		GoodNode_Security_Runnable goodNode2 = new GoodNode_Security_Runnable(2);
 		HistoryObj historyObj = new HistoryObj(1);
-		goodNode1.sign(historyObj);
-		System.out.println(goodNode2.verify(goodNode1, historyObj));
+		goodNode1.signHistoryObj(historyObj);
+		System.out.println(goodNode2.verifyHistoryObj(goodNode1, historyObj));
 	}
 }

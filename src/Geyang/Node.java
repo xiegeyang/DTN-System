@@ -51,6 +51,7 @@ public abstract class Node {
 		syncConnectID(this, this.label);
 		syncConnectID(newNode, newNode.label);
 		System.out.println("Node " + this.label +" disconnect with node " + newNode.label);
+		this.setTimes(this, newNode, 0);
 		//System.out.println("Connection ID of each node: ");
 		//for(int i =0; i<nodesGroup.size() ;i++){
 		//	Node goodNode = nodesGroup.elementAt(i);
@@ -97,7 +98,7 @@ public abstract class Node {
 		if(!this.neighbors.contains(newNode)) this.neighbors.add(newNode);
 		if(!newNode.neighbors.contains(this)) newNode.neighbors.add(this);
 		syncConnectID(this, newNode);
-		
+		this.setTimes(this, newNode, 1);
 		//System.out.println("Connection ID of each node: ");
 		//for(int i =0; i<nodesGroup.size() ;i++){
 		//	Node goodNode = nodesGroup.elementAt(i);
@@ -130,9 +131,11 @@ public abstract class Node {
 		if(desNode == null){
 			return false;
 		}
-		if(isConnect(desNode)&&sendMatrix(desNode)){
+		if(isConnect(desNode)){
 			System.out.println("Node : " + label + ", sending message : " + this.msg 
 					+ ", to Node : " + desNode.label);
+			SendContactHis(this.matrix, desNode);
+			sendMatrix(desNode);
 			
 		}else{
 			return false;
@@ -218,8 +221,8 @@ public abstract class Node {
 	protected void randomMatrix(HistoryObj[][] matrix){
 		for(int i =0;i<matrix.length;i++){
 			for(int j =0;j<matrix[0].length;j++){
-				Random ran = new Random();
-				matrix[i][j] = new HistoryObj(ran.nextInt(50));
+				//Random ran = new Random();
+				matrix[i][j] = new HistoryObj(0);
 			}
 		}
 	}
@@ -263,5 +266,12 @@ public abstract class Node {
 		return history;
 	}*/
 	
+	private boolean setTimes(Node nodeA, Node nodeB, int i){
+		nodeA.matrix[nodeB.label][nodeA.label].getContactHis().setTimes(i);
+		nodeA.matrix[nodeA.label][nodeB.label].getContactHis().setTimes(i);
+		nodeB.matrix[nodeB.label][nodeA.label].getContactHis().setTimes(i);
+		nodeB.matrix[nodeA.label][nodeB.label].getContactHis().setTimes(i);
+		return true;
+	}
 	
 }

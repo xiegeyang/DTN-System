@@ -1,9 +1,10 @@
 package Geyang;
 
 public class Message {
-	private String msg;
-	
-	public Message(String msg){
-		this.msg = msg;
-	}
+	public String A;
+	public int id_i;
+	public int id_j;
+	public byte[] signature_Sting;
+	public int times;
+	public byte[] signature_times;
 }

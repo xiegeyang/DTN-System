@@ -100,7 +100,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	        }
 	}
 	
-	public void sign(HistoryObj historyObj){
+	public void signHistoryObj(HistoryObj historyObj){
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			try {
@@ -130,8 +130,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		
 	}
 	
-	public boolean verify(Node neignberNode, HistoryObj historyObj){
-		
+	public boolean verifyHistoryObj(Node neignberNode, HistoryObj historyObj){
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			sign.initVerify(((GoodNode_Security_Runnable)neignberNode).publicKey);
