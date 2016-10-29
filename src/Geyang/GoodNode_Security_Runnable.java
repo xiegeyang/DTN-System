@@ -105,9 +105,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			try {
 				sign.initSign(this.privateKey);
-				Serializer serializer = Serializer.getInstance();
 				try {
-					historyObj.setData(serializer.serialize(historyObj.getContactHis()));
 					sign.update(historyObj.getData());
 					byte[] signature = sign.sign();
 					if(historyObj.getSignatureA()== null){
@@ -117,7 +115,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 						historyObj.setSignatureB(signature);
 					}
 					
-				} catch (SignatureException | IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -133,17 +131,24 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	}
 	
 	public boolean verify(Node neignberNode, HistoryObj historyObj){
-		boolean isVerify = false;
+		
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			sign.initVerify(((GoodNode_Security_Runnable)neignberNode).publicKey);
 			sign.update(historyObj.getData());
-			isVerify = sign.verify(historyObj.getSignatureB());
+			if(sign.verify(historyObj.getSignatureA())){
+				historyObj.setSignatureA(null);
+				return true;
+			}
+			if(sign.verify(historyObj.getSignatureB())){
+				historyObj.setSignatureB(null);
+				return true;
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return isVerify;
+		return false;
 	}
 
 }

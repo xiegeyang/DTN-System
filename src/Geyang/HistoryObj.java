@@ -1,5 +1,6 @@
 package Geyang;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 public class HistoryObj {
@@ -11,6 +12,13 @@ public class HistoryObj {
 
 	public HistoryObj(int time){
 		contactHis = new ContactHis(time);
+		Serializer serializer = Serializer.getInstance();
+		try {
+			data = serializer.serialize(this.getContactHis());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
