@@ -109,7 +109,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	        }
 	}
 	
-	public void sign(HistoryObj historyObj){
+	public void signHistoryObj(HistoryObj historyObj){
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			try {
@@ -139,8 +139,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		
 	}
 	
-	public boolean verify(Node neignberNode, HistoryObj historyObj){
-		
+	public boolean verifyHistoryObj(Node neignberNode, HistoryObj historyObj){
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			sign.initVerify(((GoodNode_Security_Runnable)neignberNode).publicKey);
@@ -161,32 +160,28 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		return false;
 	}
 	public boolean verifyRandomString(Message m, Node j) {
+		String message = m.A + m.id_i + m.id_j;
+		byte[] digest = getHash(message);
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			sign.initVerify(keyMap.get(j));
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String message = m.
-			md.update(input);
-			sign.update(m.signature_String);
-			if(sign.verify(historyObj.getSignatureA())){
-				historyObj.setSignatureA(null);
+			sign.update(digest);
+			if(sign.verify(m.signature_String)){
 				return true;
 			}
 		} catch  (Exception e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 	public byte[] signRandomString(int jLabel){
 		String message = this.A + this.label + jLabel;
 		Signature sign = null;
-		byte[] digest = null;
+		byte[] digest = getHash(message);
 		byte[] res = null;
 		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			sign = Signature.getInstance("SHA1withRSA");
 			sign.initSign(this.privateKey);
-			md.update(message.getBytes("UTF-8"));
-			digest = md.digest();
 			
 			sign.update(digest);
 			res = sign.sign();
@@ -197,5 +192,19 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		}
 		return res;
 	}
-
+	private byte[] getHash(String s) {
+		byte[] digest = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(s.getBytes("UTF-8"));
+			digest = md.digest();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return digest;
+	}
 }
