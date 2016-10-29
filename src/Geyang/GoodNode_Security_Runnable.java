@@ -20,10 +20,13 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	protected PrivateKey privateKey;
 	protected PublicKey publicKey;
 	protected HashMap<Node, PublicKey> keyMap = new HashMap<>();
-	
+	protected String A;
 	
 	public KeyPair getPair() {
 		return pair;
+	}
+	public String getA() {
+		return this.A;
 	}
 
 	public void setPair(KeyPair pair) {
@@ -60,12 +63,16 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	public GoodNode_Security_Runnable(int label) {
 		super(label);
 		keyGeneration();
+		RandomString rsGenarator = new RandomString(32);
+		this.A = rsGenarator.nextString();
 		// TODO Auto-generated constructor stub
 	}
 	
 	public GoodNode_Security_Runnable(int label, Vector<Node> vec, int numOfNds) {
 		super(label, vec, numOfNds);
 		keyGeneration();
+		RandomString rsGenarator = new RandomString(32);
+		this.A = rsGenarator.nextString();
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -153,11 +160,24 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		}
 		return false;
 	}
-	
+	public boolean verifyRandomString(Message m, Node j) {
+		try {
+			Signature sign = Signature.getInstance("SHA1withRSA");
+			sign.initVerify(keyMap.get(j));
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String message = m.
+			md.update(input);
+			sign.update(m.signature_String);
+			if(sign.verify(historyObj.getSignatureA())){
+				historyObj.setSignatureA(null);
+				return true;
+			}
+		} catch  (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public byte[] signRandomString(int jLabel){
-		RandomString rsGenarator = new RandomString(32);
-		String rs = rsGenarator.nextString();
-		String message = rs + this.label + jLabel;
+		String message = this.A + this.label + jLabel;
 		Signature sign = null;
 		byte[] digest = null;
 		byte[] res = null;
