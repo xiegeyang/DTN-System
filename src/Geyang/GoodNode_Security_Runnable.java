@@ -147,6 +147,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			//
 		}
 		return false;
 	}
