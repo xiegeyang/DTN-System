@@ -6,8 +6,8 @@ public class MutiThreadsTst {
 	public static void main(String[] args){
 		MutiThreadsTst test = new MutiThreadsTst();
 		//test.MutiTreadsNodes();
-		test.tstNodesManger();
-		//test.tstSign();
+		//test.tstNodesManger();
+		test.tstSign();
 	}
 	
 	public void tstNodesManger(){

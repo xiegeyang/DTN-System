@@ -86,6 +86,33 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		return true;
 	}
 	
+	public boolean SendContactHis(HistoryObj[][] matrix, Node desNode){
+		HistoryObj historyObj = matrix[this.label][desNode.label];
+		if(historyObj == null){
+			return false;
+		}
+		int times = historyObj.getContactHis().getTimes();
+		historyObj.getContactHis().setTimes(times+1);
+		//signHistoryObj(historyObj);
+		matrix[this.label][desNode.label] = historyObj;
+		matrix[desNode.label][this.label] = historyObj;
+		desNode.receiveContactHis(this);
+		return true;
+	}
+	
+	public boolean receiveContactHis(Node sourceNode){
+		HistoryObj historyObj = matrix[this.label][sourceNode.label];
+		if(historyObj == null){
+			return false;
+		}
+		//verifyHistoryObj(sourceNode, historyObj);
+		int times = historyObj.getContactHis().getTimes()+1;
+		historyObj.getContactHis().setTimes(times+1);
+		matrix[this.label][sourceNode.label] = historyObj;
+		matrix[sourceNode.label][this.label] = historyObj;
+		return true;
+	}
+	
 	public void keyGeneration() {
 		try {
 			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
@@ -100,20 +127,15 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	        }
 	}
 	
-	public void signHistoryObj(HistoryObj historyObj){
+	public byte[] signHistoryObj(byte[] data){
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			try {
 				sign.initSign(this.privateKey);
 				try {
-					sign.update(historyObj.getData());
+					sign.update(data);
 					byte[] signature = sign.sign();
-					if(historyObj.getSignatureA()== null){
-						historyObj.setSignatureA(signature);
-					}
-					if(historyObj.getSignatureB()== null){
-						historyObj.setSignatureB(signature);
-					}
+					return signature;
 					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -127,22 +149,18 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return new byte[0];
 	}
 	
-	public boolean verifyHistoryObj(Node neignberNode, HistoryObj historyObj){
+	public boolean verifyHistoryObj(Node neignberNode, byte[] signature, byte[] data){
 		try {
 			Signature sign = Signature.getInstance("SHA1withRSA");
-			sign.initVerify(((GoodNode_Security_Runnable)neignberNode).publicKey);
-			sign.update(historyObj.getData());
-			if(sign.verify(historyObj.getSignatureA())){
-				historyObj.setSignatureA(null);
+			sign.initVerify(this.keyMap.get(neignberNode));
+			sign.update(data);
+			if(sign.verify(signature)){
 				return true;
 			}
-			if(sign.verify(historyObj.getSignatureB())){
-				historyObj.setSignatureB(null);
-				return true;
-			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
