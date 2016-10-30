@@ -2,34 +2,30 @@ package Geyang;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
-public class HistoryObj {
-	private ContactHis contactHis;
+public class HistoryObj implements Cloneable{
+	
+	private int times;
 	public byte[] signatureA; 
 	public byte[] signatureB; 
-	private byte[] data;
+	public byte[] data;
 	
 
 	public HistoryObj(int time){
-		contactHis = new ContactHis(time);
-		Serializer serializer = Serializer.getInstance();
-		try {
-			data = serializer.serialize(this.getContactHis());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.times = time;
+		this.data = ByteBuffer.allocate(4).putInt(times).array();
 	}
 	
+	public int getTimes() {
+		return times;
+	}
+
+	public void setTimes(int times) {
+		this.times = times;
+		this.data = ByteBuffer.allocate(4).putInt(times).array();
+	}
 	
-	public ContactHis getContactHis() {
-		return contactHis;
-	}
-
-
-	public void setContactHis(ContactHis contactHis) {
-		this.contactHis = contactHis;
-	}
 	
 	public byte[] getSignatureB() {
 		return signatureB;
@@ -54,27 +50,16 @@ public class HistoryObj {
 	public void setSignatureA(byte[] signature) {
 		this.signatureA = signature;
 	}
+	
+	public HistoryObj clone(){  
+	    try{  
+	        return (HistoryObj)super.clone();  
+	    }catch(Exception e){ 
+	        return null; 
+	    }
+	}
 }
 
-class ContactHis implements Serializable {
-	/**
-	 * 
-	 */
-//	private static final long serialVersionUID = 1L;
-	private int times;
-	
-	public int getTimes() {
-		return times;
-	}
-	
-	public void setTimes(int time) {
-		this.times = time;
-	}
-	
-	public ContactHis(int time){
-		this.times = time;
-	}
-}
 
 
 

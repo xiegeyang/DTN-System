@@ -65,6 +65,16 @@ public class NodesManger {
 		makeConnection(lines, isOneGroup);
 	}
 	
+	public NodesManger(int size, int lines, boolean isOneGroup, boolean security){
+		setSize(size);
+		setLines(lines);
+		nodesGroup = new Vector<>();
+		for(int i =0; i<size; i++){
+			GoodNode_Security_Runnable node = new GoodNode_Security_Runnable(i, this.nodesGroup, size);
+		}
+		makeConnection_Security(lines, isOneGroup);
+	}
+	
 	
 	
 	/*public void makeConnection(int lines){
@@ -104,7 +114,63 @@ public class NodesManger {
 		}
 	}
 	
+	public void makeConnection_Security(int lines, boolean isOneGroup){
+		System.out.println("The number of lines are : "+lines);
+		Random ran = new Random();
+		if(isOneGroup){
+			for(int i =0;i<size-1;i++){
+				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
+				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
+				if(!nodeA.getConnect(nodeB, isOneGroup)) i--;
+			}
+			for(int i =0 ; i<lines-size+1;i++){
+				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
+				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
+				if(!nodeA.getConnect(nodeB, false)) i--;
+			}
+		}else{
+			for(int i =0;i<lines;i++){
+				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
+				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
+				if(nodeA != nodeB){
+					nodeA.getConnect(nodeB,false);
+				}
+			}
+		}
+	}
+	
 	public void test(){
+		for(int i =0; i<nodesGroup.size() ;i++){
+			Node goodNode = nodesGroup.elementAt(i);
+			System.out.println(goodNode.label + " : ");
+			for(int j =0; j<goodNode.neighbors.size();j++){
+				System.out.print(goodNode.neighbors.elementAt(j).label +" ");
+			}
+			System.out.println();
+		}
+		System.out.println("Connection ID of each node: ");
+		for(int i =0; i<nodesGroup.size() ;i++){
+			Node goodNode = nodesGroup.elementAt(i);
+			System.out.println("Node " + nodesGroup.elementAt(i).label+ " : " + goodNode.connectID );
+		}
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		
+		/*for(int i =0;i<vec.size();i++){
+			GoodNode goodNode = vec.elementAt(i);
+			for(int j=0;j<goodNode.nodesGroup.size();j++){
+				System.out.println(goodNode.nodesGroup.elementAt(j).label+"");
+			}
+		}*/
+		
+		for(int i =0;i<nodesGroup.size();i++ ){
+			new Thread((GoodNode_Runnable)nodesGroup.elementAt(i)).start();
+		}
+	}
+	
+	public void testSecrity(){
 		for(int i =0; i<nodesGroup.size() ;i++){
 			Node goodNode = nodesGroup.elementAt(i);
 			System.out.println(goodNode.label + " : ");
@@ -138,13 +204,25 @@ public class NodesManger {
 	
 	public void testSignature(){
 		Vector<Node> nodesGroup = new Vector<>();
-		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(0,nodesGroup,2);
-		GoodNode_Security_Runnable goodNode2 = new GoodNode_Security_Runnable(1,nodesGroup,2);
+		GoodNode_Security_Runnable goodNode0 = new GoodNode_Security_Runnable(0,nodesGroup,2);
+		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(1,nodesGroup,2);
+		goodNode1.getConnect(goodNode0, true);
 		
-		HistoryObj historyObj = new HistoryObj(1);
 		
-		goodNode1.signHistoryObj(historyObj);
+		
+	}
+	
+	public void testMatrix(){
+		Vector<Node> nodesGroup = new Vector<>();
+		GoodNode_Security_Runnable goodNode0 = new GoodNode_Security_Runnable(0,nodesGroup,3);
+		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(1,nodesGroup,3);
+		GoodNode_Security_Runnable goodNode2 = new GoodNode_Security_Runnable(2,nodesGroup,3);
+		goodNode1.getConnect(goodNode0, true);
 		goodNode1.getConnect(goodNode2, true);
-		System.out.println(goodNode2.verifyHistoryObj(goodNode1, historyObj));
+		
+		
+		
+		
+		
 	}
 }

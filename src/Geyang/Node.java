@@ -147,7 +147,7 @@ public abstract class Node {
 		if(desNode == null){
 			return false;
 		}
-		if(!desNode.reseiveMatrix(this.matrix, this)) return false;
+		desNode.reseiveMatrix(this.matrix, this);
 		return true;
 	}
 	
@@ -166,8 +166,8 @@ public abstract class Node {
 		if(historyObj == null){
 			historyObj = new HistoryObj(1);
 		}
-		int times = historyObj.getContactHis().getTimes();
-		historyObj.getContactHis().setTimes(times+1);
+		int times = historyObj.getTimes();
+		historyObj.setTimes(times+1);
 		matrix[this.label][desNode.label] = historyObj;
 		matrix[desNode.label][this.label] = historyObj;
 		desNode.receiveContactHis(this);
@@ -179,8 +179,8 @@ public abstract class Node {
 		if(historyObj == null){
 			historyObj = new HistoryObj(1);
 		}
-		int times = historyObj.getContactHis().getTimes()+1;
-		historyObj.getContactHis().setTimes(times+1);
+		int times = historyObj.getTimes()+1;
+		historyObj.setTimes(times);
 		matrix[this.label][sourceNode.label] = historyObj;
 		matrix[sourceNode.label][this.label] = historyObj;
 		return true;
@@ -193,10 +193,10 @@ public abstract class Node {
 		for(int i =0;i<matrix.length; i++){
 			for(int j =0;j<matrix[i].length;j++){
 				//HistoryObj ch =  verifyHistoryObj()
-				if(this.matrix[i][j].getContactHis().getTimes() < neiMatrix[i][j].getContactHis().getTimes()) {
+				if(this.matrix[i][j].getTimes() < neiMatrix[i][j].getTimes()) {
 					System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
-							+ " from " + matrix[i][j].getContactHis().getTimes() + " to " + neiMatrix[i][j].getContactHis().getTimes());
-					this.matrix[i][j].getContactHis().setTimes(neiMatrix[i][j].getContactHis().getTimes());
+							+ " from " + matrix[i][j].getTimes() + " to " + neiMatrix[i][j].getTimes());
+					this.matrix[i][j].setTimes(neiMatrix[i][j].getTimes());
 				}	
 			}
 		}
@@ -267,10 +267,14 @@ public abstract class Node {
 	}*/
 	
 	private boolean setTimes(Node nodeA, Node nodeB, int i){
-		nodeA.matrix[nodeB.label][nodeA.label].getContactHis().setTimes(i);
-		nodeA.matrix[nodeA.label][nodeB.label].getContactHis().setTimes(i);
-		nodeB.matrix[nodeB.label][nodeA.label].getContactHis().setTimes(i);
-		nodeB.matrix[nodeA.label][nodeB.label].getContactHis().setTimes(i);
+		nodeA.matrix[nodeB.label][nodeA.label] = null;
+		nodeA.matrix[nodeB.label][nodeA.label] = new HistoryObj(i);
+		nodeA.matrix[nodeA.label][nodeB.label] = null;
+		nodeA.matrix[nodeA.label][nodeB.label] = new HistoryObj(i);
+		nodeB.matrix[nodeB.label][nodeA.label] = null;
+		nodeB.matrix[nodeB.label][nodeA.label] = new HistoryObj(i);
+		nodeB.matrix[nodeA.label][nodeB.label] = null;
+		nodeB.matrix[nodeA.label][nodeB.label] = new HistoryObj(i);
 		return true;
 	}
 	

@@ -44,13 +44,13 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		return nodesGroup.elementAt(index) == this ? null: nodesGroup.elementAt(index);
 	}
 	
-	private Node randomNeighbors(){
+	protected Node randomNeighbors(){
 		if(this.neighbors.size()==0) return null;
 		int index = (int)(Math.random() * this.neighbors.size());
 		return this.neighbors.elementAt(index) == this ? null: this.neighbors.elementAt(index);
 	}
 	
-	private boolean ChangeContact(int probability){
+	protected boolean ChangeContact(int probability){
 		//probability from 0 - 100;
 		boolean isChanged = false;
 		if(probability <0) probability = 0;
