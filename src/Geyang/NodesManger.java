@@ -137,10 +137,14 @@ public class NodesManger {
 	
 	
 	public void testSignature(){
-		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(1);
-		GoodNode_Security_Runnable goodNode2 = new GoodNode_Security_Runnable(2);
+		Vector<Node> nodesGroup = new Vector<>();
+		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(0,nodesGroup,2);
+		GoodNode_Security_Runnable goodNode2 = new GoodNode_Security_Runnable(1,nodesGroup,2);
+		
 		HistoryObj historyObj = new HistoryObj(1);
+		
 		goodNode1.signHistoryObj(historyObj);
+		goodNode1.getConnect(goodNode2, true);
 		System.out.println(goodNode2.verifyHistoryObj(goodNode1, historyObj));
 	}
 }

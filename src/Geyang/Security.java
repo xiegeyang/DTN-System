@@ -1,7 +1,7 @@
 package Geyang;
 
 public interface Security {
-	public void signHistoryObj(HistoryObj historyObj);
-	public boolean verifyHistoryObj(Node neignberNode, HistoryObj historyObj);
+	public byte[] signHistoryObj(byte[] data);
+	public boolean verifyHistoryObj(Node neignberNode, byte[] signature, byte[] data);
 	void keyGeneration();
 }
