@@ -30,8 +30,8 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		while(true){
 			try{
 				Thread.sleep((int)( Math.random() * 10000));
-				if(!ChangeContact(10))
-					sendMessage(randomNeighbors());
+				//ChangeContact(10);
+					//sendMessage(randomNeighbors());
 			}catch(Exception e){
 				 e.printStackTrace();
 			}
@@ -39,7 +39,7 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		}
 	}
 	
-	private Node randomNode(){
+	protected Node randomNode(){
 		int index = (int)(Math.random() * nodesGroup.size());
 		return nodesGroup.elementAt(index) == this ? null: nodesGroup.elementAt(index);
 	}

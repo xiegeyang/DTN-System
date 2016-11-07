@@ -107,7 +107,7 @@ public abstract class Node {
 		return true;
 	}
 	
-	private void syncConnectID(Node origiNode, Node newNode){
+	protected void syncConnectID(Node origiNode, Node newNode){
 		if(origiNode == null || newNode == null) return;
 		if(origiNode.connectID == newNode.connectID) return;
 		origiNode.connectID = newNode.connectID;
