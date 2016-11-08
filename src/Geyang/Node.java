@@ -51,7 +51,7 @@ public abstract class Node {
 		syncConnectID(this, this.label);
 		syncConnectID(newNode, newNode.label);
 		System.out.println("Node " + this.label +" disconnect with node " + newNode.label);
-		this.setTimes(this, newNode, 0);
+		//this.setTimes(this, newNode, 0);
 		//System.out.println("Connection ID of each node: ");
 		//for(int i =0; i<nodesGroup.size() ;i++){
 		//	Node goodNode = nodesGroup.elementAt(i);
