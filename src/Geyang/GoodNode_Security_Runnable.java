@@ -334,14 +334,21 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	}
 	
 	public void run(){
+		int i =0; 
 		GoodNode_Security_Runnable randomNode = null;
 		while(true){
 			try{
 				Thread.sleep((int)( Math.random() * 10000));
-				if(!ChangeContact(10)){
-					randomNode = (GoodNode_Security_Runnable)randomNeighbors();
+				if(true){
+					i++;
+					if(i<=20)
+						randomNode = (GoodNode_Security_Runnable)randomNeighbors();
+					else{
+						System.out.println("randoNode-------------------------");
+						randomNode = (GoodNode_Security_Runnable)randomNode();
+					}
 					if(randomNode!=null && randomNode!=this){
-						if(!ChangeContact(10))
+						//if(!ChangeContact(10))
 						sendMessage(randomNode);
 						sendMatrix(randomNode);
 					}

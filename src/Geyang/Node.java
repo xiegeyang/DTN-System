@@ -40,17 +40,18 @@ public abstract class Node {
 	}
 	
 	public void disConnect(Node newNode){
+		
 		if(newNode == null) return;
 		if(this == newNode) return;
 		if(newNode.connectID != this.connectID){
 			return;
 		}
-		
+		System.out.println("Node " + this.label +" disconnect with node " + newNode.label);
 		if(newNode.neighbors.contains(this)) newNode.neighbors.remove(this);
 		if(this.neighbors.contains(newNode)) this.neighbors.remove(newNode);
 		syncConnectID(this, this.label);
 		syncConnectID(newNode, newNode.label);
-		System.out.println("Node " + this.label +" disconnect with node " + newNode.label);
+		
 		//this.setTimes(this, newNode, 0);
 		//System.out.println("Connection ID of each node: ");
 		//for(int i =0; i<nodesGroup.size() ;i++){
@@ -88,13 +89,14 @@ public abstract class Node {
 	}*/
 	
 	public boolean getConnect(Node newNode, boolean isOneGroup){
+		System.out.println("Node " + this.label +" connect with node " + newNode.label);
 		if(newNode == null) return false;
 		if(this.neighbors.contains(newNode)) return false;
 		if(isOneGroup && newNode.connectID == this.connectID){
 			return false;
 		}
 		if(this == newNode) return false;
-		System.out.println("Node " + this.label +" connect with node " + newNode.label);
+		
 		if(!this.neighbors.contains(newNode)) this.neighbors.add(newNode);
 		if(!newNode.neighbors.contains(this)) newNode.neighbors.add(this);
 		syncConnectID(this, newNode);

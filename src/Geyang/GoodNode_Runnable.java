@@ -50,6 +50,7 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		return this.neighbors.elementAt(index) == this ? null: this.neighbors.elementAt(index);
 	}
 	
+	
 	protected boolean ChangeContact(int probability){
 		//probability from 0 - 100;
 		boolean isChanged = false;
