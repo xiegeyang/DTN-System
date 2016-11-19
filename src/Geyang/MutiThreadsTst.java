@@ -11,21 +11,19 @@ public class MutiThreadsTst {
 		test.tstNodesManger_Security();
 	}
 	
-	public void tstNodesManger(){
-		NodesManger ndsMg= new NodesManger(5,5,true);
-		//NodesManger ndsMg= new NodesManger(10);
-		ndsMg.test();
-	}
 	
-	public void tstSign(){
-		NodesManger ndsMg= new NodesManger();
-		//ndsMg.testSignature();
-		ndsMg.testMatrix();
-	}
+	
+	
 	
 	public void tstNodesManger_Security(){
-		NodesManger ndsMg= new NodesManger(3,3,true,true);
+		NodesManger ndsMg= new NodesManger(6,6,true,true);
 		//NodesManger ndsMg= new NodesManger(10);
+		GoodNode_Security_Runnable badNode = (GoodNode_Security_Runnable) ndsMg.getNodesGroup().get(5);
+		//badNode.matrix[5][1].setTimes(10);
+		//badNode.matrix[5][2].setTimes(10);
+		badNode.matrix[5][3].setTimes(10);
+		badNode.matrix[5][4].setTimes(10);
+		
 		ndsMg.testSecrity();
 	}
 	

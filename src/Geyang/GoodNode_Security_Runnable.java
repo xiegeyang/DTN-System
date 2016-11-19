@@ -54,14 +54,6 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	}
 
 	
-	
-	
-	public GoodNode_Security_Runnable(int label) {
-		super(label);
-		keyGeneration();
-		// TODO Auto-generated constructor stub
-	}
-	
 	public GoodNode_Security_Runnable(int label, Vector<Node> vec, int numOfNds) {
 		super(label, vec, numOfNds);
 		keyGeneration();
@@ -103,11 +95,18 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		if(nodeB == null){
 			return false;
 		}
+		
+		boolean isSuccess = true;
 		Message message = ((GoodNode_Security_Runnable)this).createMessage(this.matrix, nodeB, true);
 		//message.setTimes(10);
-		((GoodNode_Security_Runnable)nodeB).receiveMessage(this, message);
+		if(message == null) return false;
+		isSuccess = ((GoodNode_Security_Runnable)nodeB).receiveMessage(this, message);
+		if(!isSuccess) return false;
 		message = ((GoodNode_Security_Runnable)nodeB).createMessage(nodeB.matrix, this, false);
-		((GoodNode_Security_Runnable)this).receiveMessage(nodeB, message);
+		if(message == null) return false;
+		isSuccess = ((GoodNode_Security_Runnable)this).receiveMessage(nodeB, message);
+		if(!isSuccess) return false;
+		sp.setMatrix(this.label, nodeB.label, this.matrix[this.label][nodeB.label].getTimes()+1);
 		return true;
 	}
 	
@@ -120,16 +119,22 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			historyObj = new HistoryObj(0);
 		}
 		
-		if(!((verify(desNode, historyObj.signatureA, historyObj.data) && 
+		int times = historyObj.getTimes();
+		//System.out.println(times);
+		
+		if(times == -1){
+			return null;
+		}
+		else if(!((verify(desNode, historyObj.signatureA, historyObj.data) && 
 				verify(this, historyObj.signatureB, historyObj.data))||
 				(verify(desNode, historyObj.signatureB, historyObj.data) && 
 				verify(this, historyObj.signatureA, historyObj.data)))&& 
 				(historyObj.signatureA !=null || historyObj.signatureB!=null)){
-			System.out.println("Attack detact");
+			System.out.println("Create message Attack detact" + " Node " + this.label + " and node " + desNode.label);
+			setHistory(this, desNode,-1);
 			return null;
 		}
-		int times = historyObj.getTimes();
-		//System.out.println(times);
+		
 		if(first)
 			times++;
 		
@@ -149,20 +154,24 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		System.out.println("Node " + this.label + " received the message from Node " + sourceNode.label);
 		if(!verify(sourceNode, message.signature_Sting, message.data_String)){
 			System.out.println("ID spoofing Attack detect!");
+			setHistory(this,sourceNode,-1);
 			return false;
 			
 		}
 		if(!verify(sourceNode, message.signature_times, message.data_times)){
 			System.out.println("potential Attack detect!");
+			setHistory(this,sourceNode,-1);
 			return false;
 		}
 		if(matrix[this.label][sourceNode.label].getTimes()!=matrix[sourceNode.label][this.label].getTimes()){
 			System.out.println("1. Malicious intent Attack detect!");
+			setHistory(this,sourceNode,-1);
 			return false;
 		}
 		
 		if(matrix[this.label][sourceNode.label].getTimes()+1!= message.getTimes()){
 			System.out.println("2. Malicious intent Attack detect!");
+			setHistory(this,sourceNode,-1);
 			return false;
 		}
 		//matrix[this.label][sourceNode.label] = null;
@@ -179,7 +188,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		
 		for(int i = 0; i< matrix.length;i++){
 			for(int j =0;j<matrix[0].length;j++){
-				System.out.print(matrix[i][j].getTimes());
+				System.out.print(matrix[i][j].getTimes() + " ");
 			}
 			System.out.println();
 		}
@@ -199,11 +208,11 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		//System.out.println(signature.length);
 		if(!this.verify(neighber, signature, data_Matrix)){
 			System.out.println("potential Attack Detect");
+			setHistory(this,neighber,-1);
 			return false;
 		}
 		//System.out.println(this.label + "--------------" + neighber.label);
-		compare(neighber);	
-		
+		compare(neighber);
 		return true;
 	}
 	
@@ -215,30 +224,48 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 				HistoryObj obj2 = node.matrix[i][j];
 				//if(!(obj1.signatureA == null && obj1.signatureB == null && obj1.getTimes()==0))
 				//if()
-				if(obj1.getTimes()!=0 && !((verify(nodesGroup.get(i), obj1.signatureA, obj1.data) 
-						&& verify(nodesGroup.get(j), obj1.signatureB, obj1.data)) ||
-						(verify(nodesGroup.get(i), obj1.signatureB, obj1.data) && 
-						verify(nodesGroup.get(j), obj1.signatureA, obj1.data)))){
-						System.out.println(" Attack on the integrity detect [i, j] : [" + i + " , " + j + "], from label " + this.label + "'s matrix" );
-						printMatrix(this);
-						return false;
+				if(obj1.getTimes()==-1 && obj2.getTimes()==-1){
+					
+				}else if(obj1.getTimes()==-1 && obj2.getTimes()!=-1){
+					HistoryObj temp = new HistoryObj(-1);
+					HistoryObj temp2 = new HistoryObj(-1);
+					node.matrix[i][j] = temp;
+					node.matrix[j][i] = temp2;
+				}else if(obj1.getTimes()!=-1 && obj2.getTimes()==-1){
+					HistoryObj temp = new HistoryObj(-1);
+					HistoryObj temp2 = new HistoryObj(-1);
+					this.matrix[i][j] = temp;
+					this.matrix[j][i] = temp2;
 				}
-				if(obj2.getTimes()!=0 && !((verify(nodesGroup.get(i), obj2.signatureA, obj2.data) 
-						&& verify(nodesGroup.get(j), obj2.signatureB, obj2.data)) ||
-						(verify(nodesGroup.get(i), obj2.signatureB, obj2.data) && 
-						verify(nodesGroup.get(j), obj2.signatureA, obj2.data)))){
-						System.out.println(" Attack on the integrity detect [i, j] : [" + i + " , " + j + "], from label " + node.label + "'s matrix"  );
-						printMatrix(node);
-						return false;
-						
+				else{
+					if(obj1.getTimes()!=0 && !((verify(nodesGroup.get(i), obj1.signatureA, obj1.data) 
+							&& verify(nodesGroup.get(j), obj1.signatureB, obj1.data)) ||
+							(verify(nodesGroup.get(i), obj1.signatureB, obj1.data) && 
+							verify(nodesGroup.get(j), obj1.signatureA, obj1.data)))){
+							System.out.println(" Attack on the integrity detect [i, j] : [" + i + " , " + j + "], from label " + this.label + "'s matrix" );
+							//printMatrix(this);
+							setHistory(this,node,-1);
+							return false;
+					}
+					if(obj2.getTimes()!=0 && !((verify(nodesGroup.get(i), obj2.signatureA, obj2.data) 
+							&& verify(nodesGroup.get(j), obj2.signatureB, obj2.data)) ||
+							(verify(nodesGroup.get(i), obj2.signatureB, obj2.data) && 
+							verify(nodesGroup.get(j), obj2.signatureA, obj2.data)))){
+							System.out.println(" Attack on the integrity detect [i, j] : [" + i + " , " + j + "], from label " + node.label + "'s matrix"  );
+							//printMatrix(node);
+							setHistory(this,node,-1);
+							return false;
+							
+					}
+					if(this.matrix[i][j].getTimes() < node.matrix[i][j].getTimes()) {
+						System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
+								+ " from " + matrix[i][j].getTimes() + " to " + node.matrix[i][j].getTimes());
+						this.matrix[i][j] = null;
+						HistoryObj temp_obj = node.matrix[i][j];
+						this.matrix[i][j] = temp_obj.clone();
+					}	
 				}
-				if(this.matrix[i][j].getTimes() < node.matrix[i][j].getTimes()) {
-					System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
-							+ " from " + matrix[i][j].getTimes() + " to " + node.matrix[i][j].getTimes());
-					this.matrix[i][j] = null;
-					HistoryObj temp_obj = node.matrix[i][j];
-					this.matrix[i][j] = temp_obj.clone();
-				}	
+				
 			}
 		}
 		return true;
@@ -314,6 +341,14 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		}
 	}
 	
+	public void setHistory(Node a , Node b,int times){
+		HistoryObj newHistory = new HistoryObj(times);
+		HistoryObj newHistory2 = newHistory.clone();
+		this.matrix[a.label][b.label] = newHistory;
+		this.matrix[b.label][a.label] = newHistory2;
+		this.sp.setMatrix(a.label, b.label, times);
+	}
+	
 	protected boolean ChangeContact(int probability){
 		//probability from 0 - 100;
 		boolean isChanged = false;
@@ -334,25 +369,20 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	}
 	
 	public void run(){
-		int i =0; 
+		//int i =0; 
 		GoodNode_Security_Runnable randomNode = null;
 		while(true){
 			try{
 				Thread.sleep((int)( Math.random() * 10000));
 				if(true){
-					i++;
-					if(i<=20)
-						randomNode = (GoodNode_Security_Runnable)randomNeighbors();
-					else{
-						System.out.println("randoNode-------------------------");
-						randomNode = (GoodNode_Security_Runnable)randomNode();
-					}
+					//i++;
+					randomNode = (GoodNode_Security_Runnable)randomNode();
+					
 					if(randomNode!=null && randomNode!=this){
 						//if(!ChangeContact(10))
-						sendMessage(randomNode);
+						if(sendMessage(randomNode))
 						sendMatrix(randomNode);
 					}
-					
 				}
 					
 			}catch(Exception e){

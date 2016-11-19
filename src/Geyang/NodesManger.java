@@ -6,6 +6,7 @@ public class NodesManger {
 	private int size;
 	private Vector<Node> nodesGroup;
 	private int lines;
+	private HistoryObj[][] matrix;
 	
 	private void setSize(int size){
 		if(size <= 0){
@@ -33,49 +34,62 @@ public class NodesManger {
 		
 	}
 
-	public NodesManger(int size){
-		setSize(size);
-		nodesGroup = new Vector<>();
-		for(int i =0; i<size; i++){
-			GoodNode_Runnable node = new GoodNode_Runnable(i, this.nodesGroup, size);
-		}
-		Random ran = new Random();
-		this.lines = ran.nextInt(size * 2 - size) + size;
-		makeConnection(lines,false);
-		
-	}
-	
-	public NodesManger(int size, int lines){
-		setSize(size);
-		setLines(lines);
-		nodesGroup = new Vector<>();
-		for(int i =0; i<size; i++){
-			GoodNode_Runnable node = new GoodNode_Runnable(i, this.nodesGroup, size);
-		}
-		makeConnection(lines,false);
-	}
-	
-	public NodesManger(int size, int lines, boolean isOneGroup){
-		setSize(size);
-		setLines(lines);
-		nodesGroup = new Vector<>();
-		for(int i =0; i<size; i++){
-			GoodNode_Runnable node = new GoodNode_Runnable(i, this.nodesGroup, size);
-		}
-		makeConnection(lines, isOneGroup);
-	}
 	
 	public NodesManger(int size, int lines, boolean isOneGroup, boolean security){
 		setSize(size);
 		setLines(lines);
 		nodesGroup = new Vector<>();
+		matrix = new HistoryObj[size][size];
 		for(int i =0; i<size; i++){
 			GoodNode_Security_Runnable node = new GoodNode_Security_Runnable(i, this.nodesGroup, size);
 		}
-		makeConnection_Security(lines, isOneGroup);
+		randomMatrix(matrix);
+		for(int i =0;i<matrix.length;i++){
+			for(int j =0;j<matrix[0].length;j++){
+				HistoryObj obj = matrix[i][j];
+				System.out.print(obj.getTimes()+" ");
+			}
+			System.out.println();
+		}
+		for(int i =0;i<size;i++){
+			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
+			node.matrix = new HistoryObj[size][size];
+			for(int j = 0;j<matrix.length;j++){
+				for(int z = 0;z<matrix[0].length;z++){
+					HistoryObj temp = matrix[j][z].clone();
+					node.matrix[j][z] = temp;
+				}
+			}
+			
+		}
+		
+		ShortPath sp = new ShortPath(size,matrix);
+		sp.CaluShortPath();
+		
+		for(int i =0;i<size;i++){
+			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
+			node.sp = sp;
+		}
+		//makeConnection_Security(lines, isOneGroup);
 	}
 	
-	
+	public void randomMatrix(HistoryObj matrix[][]){
+		for(int i = 0 ;i<matrix.length;i++){
+			for(int j =0;j<matrix[0].length;j++){
+				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable)nodesGroup.get(i);
+				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable)nodesGroup.get(j);
+				Random random = new Random();
+				int ranTime = random.nextInt(1000);
+				if(i==j) ranTime = 0;
+				HistoryObj history = new HistoryObj(ranTime);
+				history.signatureA = nodeA.sign(history.data);
+				history.signatureB = nodeB.sign(history.data);
+				HistoryObj history2 = history.clone();
+				matrix[i][j] = history;
+				matrix[j][i] = history2;
+			}
+		}
+	}
 	
 	/*public void makeConnection(int lines){
 		System.out.println("The number of lines are : "+lines);
@@ -202,27 +216,5 @@ public class NodesManger {
 	}
 	
 	
-	public void testSignature(){
-		Vector<Node> nodesGroup = new Vector<>();
-		GoodNode_Security_Runnable goodNode0 = new GoodNode_Security_Runnable(0,nodesGroup,2);
-		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(1,nodesGroup,2);
-		goodNode1.getConnect(goodNode0, true);
-		
-		
-		
-	}
 	
-	public void testMatrix(){
-		Vector<Node> nodesGroup = new Vector<>();
-		GoodNode_Security_Runnable goodNode0 = new GoodNode_Security_Runnable(0,nodesGroup,3);
-		GoodNode_Security_Runnable goodNode1 = new GoodNode_Security_Runnable(1,nodesGroup,3);
-		GoodNode_Security_Runnable goodNode2 = new GoodNode_Security_Runnable(2,nodesGroup,3);
-		goodNode1.getConnect(goodNode0, true);
-		goodNode1.getConnect(goodNode2, true);
-		
-		
-		
-		
-		
-	}
 }

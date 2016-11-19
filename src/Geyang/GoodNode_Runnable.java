@@ -6,22 +6,15 @@ import java.util.*;
 public class GoodNode_Runnable extends Node implements Runnable{
 	
 
-	public GoodNode_Runnable(int label) {
-		// TODO Auto-generated constructor stub
-		this.label = label;
-		this.connectID = label;
-		neighbors = new Vector<>();
-		GoodNode_Runnable.nodesGroup.add(this);
-		//keyGeneration();
-	}
+	
 	
 	public GoodNode_Runnable(int label, Vector<Node> vec, int numOfNds){
 		this.label = label;
 		this.connectID = label;
 		this.neighbors = new Vector<>();
 		GoodNode_Runnable.nodesGroup = vec;
-		this.matrix = new HistoryObj[numOfNds][numOfNds];
-		randomMatrix(this.matrix);
+		
+		//randomMatrix(this.matrix);
 		nodesGroup.add(this);
 		//keyGeneration();
 	}

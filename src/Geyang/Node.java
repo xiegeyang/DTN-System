@@ -14,7 +14,7 @@ public abstract class Node {
 	protected HistoryObj matrix[][];
 	protected static Vector<Node> nodesGroup;
 	protected int connectID;
-	
+	public ShortPath sp;
 	
 	
 	
@@ -133,15 +133,13 @@ public abstract class Node {
 		if(desNode == null){
 			return false;
 		}
-		if(isConnect(desNode)){
+		
 			System.out.println("Node : " + label + ", sending message : " + this.msg 
 					+ ", to Node : " + desNode.label);
 			SendContactHis(this.matrix, desNode);
 			sendMatrix(desNode);
 			
-		}else{
-			return false;
-		}
+		
 		return true;
 	}
 	
@@ -166,7 +164,7 @@ public abstract class Node {
 	public boolean SendContactHis(HistoryObj[][] matrix, Node desNode){
 		HistoryObj historyObj = matrix[this.label][desNode.label];
 		if(historyObj == null){
-			historyObj = new HistoryObj(1);
+			historyObj = new HistoryObj(0);
 		}
 		int times = historyObj.getTimes();
 		historyObj.setTimes(times+1);
@@ -179,12 +177,13 @@ public abstract class Node {
 	public boolean receiveContactHis(Node sourceNode){
 		HistoryObj historyObj = matrix[this.label][sourceNode.label];
 		if(historyObj == null){
-			historyObj = new HistoryObj(1);
+			historyObj = new HistoryObj(0);
 		}
 		int times = historyObj.getTimes()+1;
 		historyObj.setTimes(times);
 		matrix[this.label][sourceNode.label] = historyObj;
 		matrix[sourceNode.label][this.label] = historyObj;
+		
 		return true;
 	}
 	
