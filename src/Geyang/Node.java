@@ -167,7 +167,7 @@ public abstract class Node {
 			historyObj = new HistoryObj(0);
 		}
 		int times = historyObj.getTimes();
-		historyObj.setTimes(times+1);
+		historyObj.setTimes(times);
 		matrix[this.label][desNode.label] = historyObj;
 		matrix[desNode.label][this.label] = historyObj;
 		desNode.receiveContactHis(this);
@@ -179,7 +179,7 @@ public abstract class Node {
 		if(historyObj == null){
 			historyObj = new HistoryObj(0);
 		}
-		int times = historyObj.getTimes()+1;
+		int times = historyObj.getTimes();
 		historyObj.setTimes(times);
 		matrix[this.label][sourceNode.label] = historyObj;
 		matrix[sourceNode.label][this.label] = historyObj;

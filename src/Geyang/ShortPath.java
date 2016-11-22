@@ -24,6 +24,7 @@ public class ShortPath {
 				matrix[i][j] = _matrix[i][j].getTimes();
 			}
 		}
+		CaluShortPath();
 		
 	}
 	

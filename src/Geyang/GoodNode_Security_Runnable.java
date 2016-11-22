@@ -135,8 +135,6 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			return null;
 		}
 		
-		if(first)
-			times++;
 		
 		Message message = new Message(this.label, desNode.label, times);
 		System.out.println("Message Created success, times is " + message.getTimes());
@@ -169,7 +167,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			return false;
 		}
 		
-		if(matrix[this.label][sourceNode.label].getTimes()+1!= message.getTimes()){
+		if(matrix[this.label][sourceNode.label].getTimes()!= message.getTimes()){
 			System.out.println("2. Malicious intent Attack detect!");
 			setHistory(this,sourceNode,-1);
 			return false;
