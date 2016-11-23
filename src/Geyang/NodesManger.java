@@ -5,6 +5,7 @@ import java.util.*;
 public class NodesManger {
 	private int size;
 	private Vector<Node> nodesGroup;
+	private Vector<Node> insecurityGroup;
 	private int lines;
 	private HistoryObj[][] matrix;
 	
@@ -39,14 +40,20 @@ public class NodesManger {
 		setSize(size);
 		setLines(lines);
 		nodesGroup = new Vector<>();
+		insecurityGroup = new Vector<>();
 		matrix = new HistoryObj[size][size];
 		for(int i =0; i<size; i++){
+			
 			GoodNode_Security_Runnable node = new GoodNode_Security_Runnable(i, this.nodesGroup, size);
+			nodesGroup.add(node);
+			GoodNode_Runnable inseNode = new GoodNode_Runnable(i, this.insecurityGroup,size);
+			insecurityGroup.add(inseNode);
 		}
 		randomMatrix(matrix);
 		for(int i =0;i<matrix.length;i++){
 			for(int j =0;j<matrix[0].length;j++){
 				HistoryObj obj = matrix[i][j];
+				//HistoryObj obj2 = new HistoryObj(matrix[i][j].getTimes());
 				System.out.print(obj.getTimes()+" ");
 			}
 			System.out.println();
@@ -63,12 +70,32 @@ public class NodesManger {
 			
 		}
 		
-		ShortPath sp = new ShortPath(size,matrix);
+		for(int i =0;i<size;i++){
+			GoodNode_Runnable node = (GoodNode_Runnable)this.insecurityGroup.get(i);
+			node.matrix = new HistoryObj[size][size];
+			for(int j = 0;j<matrix.length;j++){
+				for(int z = 0;z<matrix[0].length;z++){
+					HistoryObj temp = new HistoryObj(matrix[j][z].getTimes());
+					node.matrix[j][z] = temp;
+				}
+			}
+			
+		}
 		
-		
+		ShortPath sp = new ShortPath(size,matrix,1);
+		ShortPath inseSp = new ShortPath(size, matrix,2);
 		for(int i =0;i<size;i++){
 			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
 			node.sp = sp;
+		}
+		for(int i =0;i<size;i++){
+			GoodNode_Runnable node = (GoodNode_Runnable)this.insecurityGroup.get(i);
+			node.sp = inseSp;
+		}
+		for(int i =0;i<size;i++){
+			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
+			GoodNode_Runnable node2= (GoodNode_Runnable)this.insecurityGroup.get(i);
+			node.insecurityNode = node2;
 		}
 		//makeConnection_Security(lines, isOneGroup);
 	}
@@ -103,55 +130,9 @@ public class NodesManger {
 		}
 	}*/
 	
-	public void makeConnection(int lines, boolean isOneGroup){
-		System.out.println("The number of lines are : "+lines);
-		Random ran = new Random();
-		if(isOneGroup){
-			for(int i =0;i<size-1;i++){
-				Node nodeA = nodesGroup.elementAt(ran.nextInt(size)); 
-				Node nodeB = nodesGroup.elementAt(ran.nextInt(size)); 
-				if(!nodeA.getConnect(nodeB, isOneGroup)) i--;
-			}
-			for(int i =0 ; i<lines-size+1;i++){
-				Node nodeA = nodesGroup.elementAt(ran.nextInt(size)); 
-				Node nodeB = nodesGroup.elementAt(ran.nextInt(size)); 
-				if(!nodeA.getConnect(nodeB, false)) i--;
-			}
-		}else{
-			for(int i =0;i<lines;i++){
-				Node nodeA = nodesGroup.elementAt(ran.nextInt(size)); 
-				Node nodeB = nodesGroup.elementAt(ran.nextInt(size)); 
-				if(nodeA != nodeB){
-					nodeA.getConnect(nodeB,false);
-				}
-			}
-		}
-	}
 	
-	public void makeConnection_Security(int lines, boolean isOneGroup){
-		System.out.println("The number of lines are : "+lines);
-		Random ran = new Random();
-		if(isOneGroup){
-			for(int i =0;i<size-1;i++){
-				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
-				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
-				if(!nodeA.getConnect(nodeB, isOneGroup)) i--;
-			}
-			for(int i =0 ; i<lines-size+1;i++){
-				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
-				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
-				if(!nodeA.getConnect(nodeB, false)) i--;
-			}
-		}else{
-			for(int i =0;i<lines;i++){
-				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
-				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable) nodesGroup.elementAt(ran.nextInt(size)); 
-				if(nodeA != nodeB){
-					nodeA.getConnect(nodeB,false);
-				}
-			}
-		}
-	}
+	
+	
 	
 	public void test(){
 		for(int i =0; i<nodesGroup.size() ;i++){

@@ -12,7 +12,7 @@ public abstract class Node {
 	//protected HashMap<Node, Integer> frequency;
 	//protected HashMap<Node, HashMap<Node, Integer>> matrix;
 	protected HistoryObj matrix[][];
-	protected static Vector<Node> nodesGroup;
+	protected Vector<Node> nodesGroup;
 	protected int connectID;
 	public ShortPath sp;
 	
@@ -134,12 +134,13 @@ public abstract class Node {
 			return false;
 		}
 		
-			System.out.println("Node : " + label + ", sending message : " + this.msg 
-					+ ", to Node : " + desNode.label);
+			System.out.println("Insecurity Node : " + label + ", sending message : " + this.msg 
+					+ ", to Insecurity Node : " + desNode.label);
 			SendContactHis(this.matrix, desNode);
 			sendMatrix(desNode);
+			System.out.println(this.matrix[this.label][desNode.label].getTimes()+"-----------------------");
+			sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
 			
-		
 		return true;
 	}
 	
@@ -147,7 +148,8 @@ public abstract class Node {
 		if(desNode == null){
 			return false;
 		}
-		desNode.reseiveMatrix(this.matrix, this);
+		if(!desNode.reseiveMatrix(this.matrix, this)) return false;
+		//sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
 		return true;
 	}
 	
@@ -166,8 +168,11 @@ public abstract class Node {
 		if(historyObj == null){
 			historyObj = new HistoryObj(0);
 		}
-		int times = historyObj.getTimes();
-		historyObj.setTimes(times);
+		
+		int min = Math.min(this.matrix[this.label][desNode.label].getTimes(),this.matrix[desNode.label][this.label].getTimes());
+		min = Math.min(desNode.matrix[this.label][desNode.label].getTimes(), min);
+		min = Math.min(desNode.matrix[desNode.label][this.label].getTimes(), min);
+		historyObj.setTimes(min);
 		matrix[this.label][desNode.label] = historyObj;
 		matrix[desNode.label][this.label] = historyObj;
 		desNode.receiveContactHis(this);
@@ -179,11 +184,12 @@ public abstract class Node {
 		if(historyObj == null){
 			historyObj = new HistoryObj(0);
 		}
-		int times = historyObj.getTimes();
-		historyObj.setTimes(times);
+		int min = Math.min(this.matrix[this.label][sourceNode.label].getTimes(),this.matrix[sourceNode.label][this.label].getTimes());
+		min = Math.min(sourceNode.matrix[this.label][sourceNode.label].getTimes(), min);
+		min = Math.min(sourceNode.matrix[sourceNode.label][this.label].getTimes(), min);
+		historyObj.setTimes(min);
 		matrix[this.label][sourceNode.label] = historyObj;
 		matrix[sourceNode.label][this.label] = historyObj;
-		
 		return true;
 	}
 	
@@ -194,7 +200,7 @@ public abstract class Node {
 		for(int i =0;i<matrix.length; i++){
 			for(int j =0;j<matrix[i].length;j++){
 				//HistoryObj ch =  verifyHistoryObj()
-				if(this.matrix[i][j].getTimes() < neiMatrix[i][j].getTimes()) {
+				if(this.matrix[i][j].getTimes() > neiMatrix[i][j].getTimes()) {
 					System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
 							+ " from " + matrix[i][j].getTimes() + " to " + neiMatrix[i][j].getTimes());
 					this.matrix[i][j].setTimes(neiMatrix[i][j].getTimes());

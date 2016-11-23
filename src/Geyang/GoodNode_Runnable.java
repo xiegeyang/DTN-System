@@ -12,10 +12,10 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		this.label = label;
 		this.connectID = label;
 		this.neighbors = new Vector<>();
-		GoodNode_Runnable.nodesGroup = vec;
+		nodesGroup = vec;
 		
 		//randomMatrix(this.matrix);
-		nodesGroup.add(this);
+		
 		//keyGeneration();
 	}
 
@@ -32,9 +32,9 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		}
 	}
 	
-	protected Node randomNode(){
+	protected GoodNode_Security_Runnable randomNode(){
 		int index = (int)(Math.random() * nodesGroup.size());
-		return nodesGroup.elementAt(index) == this ? null: nodesGroup.elementAt(index);
+		return nodesGroup.elementAt(index) == this ? null: (GoodNode_Security_Runnable)nodesGroup.elementAt(index);
 	}
 	
 	protected Node randomNeighbors(){

@@ -1,6 +1,7 @@
 package Geyang;
 
 public class ShortPath {
+	public int label;
 	private int matrix[][];
 	private int originalMatrix[][];
 	int originalDelay[][];
@@ -18,12 +19,13 @@ public class ShortPath {
 		return this.matrix;
 	}
 	
-	public ShortPath(int size, HistoryObj _matrix[][]){
+	public ShortPath(int size, HistoryObj _matrix[][], int label){
 		matrix = new int[size][size];
 		originalMatrix = new int[size][size];
 		fakeDelay = new int[size][size];
 		RealDelay = new int[size][size];
 		originalDelay = new int[size][size];
+		this.label = label;
 		this.size = size;
 		for(int i =0;i<size;i++){
 			for(int j=0;j<size;j++){
@@ -36,7 +38,7 @@ public class ShortPath {
 	}
 	
 	public void CaluShortPath(int[][] delayMatrix, int[][] realMatrix){
-		System.out.println("--------------------------------");
+		System.out.println("----------" + this.label + "-----------");
 		int[][] prv= new int[size][size];
 		int[][] prv2= new int[size][size];
 		int[][] cur= new int[size][size];
@@ -47,11 +49,11 @@ public class ShortPath {
 				prv2[i][j] = originalMatrix[i][j];
 				cur[i][j] = matrix[i][j];
 				cur2[i][j] = originalMatrix[i][j];
-				System.out.print(matrix[i][j] +" ");
+				//System.out.print(matrix[i][j] +" ");
 			}
-			System.out.println();
+			//System.out.println();
 		}
-		System.out.println("----------Security Version------------");
+		System.out.println("----------new delay------------");
 		for(int i =1;i<size;i++){
 			for(int x = 0; x<size;x++){
 				for(int y = 0;y<size;y++){
@@ -84,6 +86,13 @@ public class ShortPath {
 				if(realMatrix!=null)
 					realMatrix[i][j] = cur2[i][j];
 				System.out.print(cur[i][j] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println("----------real delay------------");
+		for(int i =0;i<size;i++){
+			for(int j =0;j<size;j++){
+				System.out.print(cur2[i][j] + " ");
 			}
 			System.out.println();
 		}

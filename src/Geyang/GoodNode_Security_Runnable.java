@@ -19,6 +19,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	protected PrivateKey privateKey;
 	protected PublicKey publicKey;
 	protected HashMap<Integer, PublicKey> keyMap = new HashMap<>();
+	public Node insecurityNode;
 	
 	
 	public KeyPair getPair() {
@@ -57,46 +58,20 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	public GoodNode_Security_Runnable(int label, Vector<Node> vec, int numOfNds) {
 		super(label, vec, numOfNds);
 		keyGeneration();
+		//insecurityNode = new GoodNode_Runnable(label, )
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void disConnect(GoodNode_Security_Runnable newNode){
-		super.disConnect(newNode);
-		if(this.keyMap.containsKey(newNode)) this.keyMap.remove(newNode);
-		if(newNode.keyMap.containsKey(this)) newNode.keyMap.remove(this);
-		
-	}
 	
-	public boolean getConnect(GoodNode_Security_Runnable newNode, boolean isOneGroup){
-		if(newNode == null) return false;
-		if(this.neighbors.contains(newNode)) return false;
-		if(isOneGroup && newNode.connectID == this.connectID){
-			return false;
-		}
-		if(this == newNode) return false;
-		System.out.println("Node " + this.label +" connect with node " + newNode.label);
-		if(!this.neighbors.contains(newNode)) this.neighbors.add(newNode);
-		if(!newNode.neighbors.contains(this)) newNode.neighbors.add(this);
-		syncConnectID(this, newNode);
-		if(!keyMap.containsKey(newNode)){
-			keyMap.put(newNode.label, newNode.getPublicKey());
-			System.out.println("Node " + this.label + " got key from node :" + newNode.label + " , key is"  +keyMap.get(newNode.label).toString());
-		}
-		if(!newNode.keyMap.containsKey(this)){
-			newNode.keyMap.put(this.label, this.getPublicKey());
-			System.out.println("Node " + newNode.label +" got key from node " + this.label + " , key is "  +newNode.keyMap.get(this.label).toString());
-		}
-		sendMessage(newNode);
-		sendMatrix(newNode);
-		return true;
-	}
 	
 	public boolean sendMessage(Node nodeB){
 		if(nodeB == null){
 			return false;
 		}
-		
+		this.insecurityNode.sendMessage(((GoodNode_Security_Runnable)nodeB).insecurityNode);
+		this.insecurityNode.sendMatrix(((GoodNode_Security_Runnable)nodeB).insecurityNode);
 		boolean isSuccess = true;
+		System.out.println("Secuity Node " + this.label + " send message to Security Node " + nodeB.label);
 		Message message = ((GoodNode_Security_Runnable)this).createMessage(this.matrix, nodeB, true);
 		//message.setTimes(10);
 		if(message == null) return false;
@@ -133,7 +108,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		
 		
 		Message message = new Message(this.label, desNode.label, times);
-		System.out.println("Message Created success, times is " + message.getTimes());
+		//System.out.println("Message Created success, times is " + message.getTimes());
 		message.signature_Sting = sign(message.data_String);
 		message.signature_times = sign(message.data_times);
 		//historyObj.getContactHis().setTimes(times+1);
@@ -180,21 +155,24 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		matrix[sourceNode.label][this.label] = null;
 		matrix[sourceNode.label][this.label] = historyObj2;
 		
-		for(int i = 0; i< matrix.length;i++){
+		/*for(int i = 0; i< matrix.length;i++){
 			for(int j =0;j<matrix[0].length;j++){
 				System.out.print(matrix[i][j].getTimes() + " ");
 			}
 			System.out.println();
-		}
+		}*/
 		return true;
 	}
 	
 	public boolean sendMatrix(GoodNode_Security_Runnable desNode){
+		if(desNode == null) return false;
 		int hash_Matrix = this.matrix.hashCode();
 		byte[] data_Matrix = ByteBuffer.allocate(4).putInt(hash_Matrix).array();
 		byte[] signature = this.sign(data_Matrix);
 		
-		return desNode.reseiveMatrix(this, signature, data_Matrix);
+		if(!desNode.reseiveMatrix(this, signature, data_Matrix)) return false;
+		sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
+		return true;
 		
 	}
 	
@@ -251,7 +229,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 							return false;
 							
 					}
-					if(this.matrix[i][j].getTimes() < node.matrix[i][j].getTimes()) {
+					if(this.matrix[i][j].getTimes() > node.matrix[i][j].getTimes()) {
 						System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
 								+ " from " + matrix[i][j].getTimes() + " to " + node.matrix[i][j].getTimes());
 						this.matrix[i][j] = null;
@@ -374,8 +352,9 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 					
 					if(randomNode!=null && randomNode!=this){
 						//if(!ChangeContact(10))
-						if(sendMessage(randomNode) && sendMatrix(randomNode)) 
-							sp.setMatrix(this.label, randomNode.label, this.matrix[this.label][randomNode.label].getTimes());
+						if(sendMessage(randomNode))
+							sendMatrix(randomNode);
+							
 						
 					}
 				}
