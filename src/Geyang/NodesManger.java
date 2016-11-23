@@ -64,7 +64,7 @@ public class NodesManger {
 		}
 		
 		ShortPath sp = new ShortPath(size,matrix);
-		sp.CaluShortPath();
+		
 		
 		for(int i =0;i<size;i++){
 			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);

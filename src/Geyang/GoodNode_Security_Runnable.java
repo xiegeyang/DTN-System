@@ -106,7 +106,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		if(message == null) return false;
 		isSuccess = ((GoodNode_Security_Runnable)this).receiveMessage(nodeB, message);
 		if(!isSuccess) return false;
-		sp.setMatrix(this.label, nodeB.label, this.matrix[this.label][nodeB.label].getTimes()+1);
+		
 		return true;
 	}
 	
@@ -121,11 +121,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		
 		int times = historyObj.getTimes();
 		//System.out.println(times);
-		
-		if(times == -1){
-			return null;
-		}
-		else if(!((verify(desNode, historyObj.signatureA, historyObj.data) && 
+		if(!((verify(desNode, historyObj.signatureA, historyObj.data) && 
 				verify(this, historyObj.signatureB, historyObj.data))||
 				(verify(desNode, historyObj.signatureB, historyObj.data) && 
 				verify(this, historyObj.signatureA, historyObj.data)))&& 
@@ -198,8 +194,8 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		byte[] data_Matrix = ByteBuffer.allocate(4).putInt(hash_Matrix).array();
 		byte[] signature = this.sign(data_Matrix);
 		
-		desNode.reseiveMatrix(this, signature, data_Matrix);
-		return true;
+		return desNode.reseiveMatrix(this, signature, data_Matrix);
+		
 	}
 	
 	public boolean reseiveMatrix(Node neighber, byte[] signature, byte[] data_Matrix){
@@ -210,8 +206,8 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			return false;
 		}
 		//System.out.println(this.label + "--------------" + neighber.label);
-		compare(neighber);
-		return true;
+		return compare(neighber);
+		
 	}
 	
 	private boolean compare(Node node){
@@ -340,11 +336,11 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	}
 	
 	public void setHistory(Node a , Node b,int times){
-		HistoryObj newHistory = new HistoryObj(times);
-		HistoryObj newHistory2 = newHistory.clone();
-		this.matrix[a.label][b.label] = newHistory;
-		this.matrix[b.label][a.label] = newHistory2;
-		this.sp.setMatrix(a.label, b.label, times);
+		//HistoryObj newHistory = new HistoryObj(times);
+		//HistoryObj newHistory2 = newHistory.clone();
+		//this.matrix[a.label][b.label] = newHistory;
+		//this.matrix[b.label][a.label] = newHistory2;
+		//this.sp.setMatrix(a.label, b.label, times);
 	}
 	
 	protected boolean ChangeContact(int probability){
@@ -378,8 +374,9 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 					
 					if(randomNode!=null && randomNode!=this){
 						//if(!ChangeContact(10))
-						if(sendMessage(randomNode))
-						sendMatrix(randomNode);
+						if(sendMessage(randomNode) && sendMatrix(randomNode)) 
+							sp.setMatrix(this.label, randomNode.label, this.matrix[this.label][randomNode.label].getTimes());
+						
 					}
 				}
 					
