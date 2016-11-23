@@ -138,7 +138,7 @@ public abstract class Node {
 					+ ", to Insecurity Node : " + desNode.label);
 			SendContactHis(this.matrix, desNode);
 			sendMatrix(desNode);
-			System.out.println(this.matrix[this.label][desNode.label].getTimes()+"-----------------------");
+			//System.out.println(this.matrix[this.label][desNode.label].getTimes()+"-----------------------");
 			sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
 			
 		return true;
@@ -164,17 +164,14 @@ public abstract class Node {
 	}
 	
 	public boolean SendContactHis(HistoryObj[][] matrix, Node desNode){
-		HistoryObj historyObj = matrix[this.label][desNode.label];
-		if(historyObj == null){
-			historyObj = new HistoryObj(0);
-		}
 		
 		int min = Math.min(this.matrix[this.label][desNode.label].getTimes(),this.matrix[desNode.label][this.label].getTimes());
 		min = Math.min(desNode.matrix[this.label][desNode.label].getTimes(), min);
 		min = Math.min(desNode.matrix[desNode.label][this.label].getTimes(), min);
-		historyObj.setTimes(min);
-		matrix[this.label][desNode.label] = historyObj;
-		matrix[desNode.label][this.label] = historyObj;
+		HistoryObj his1 = new HistoryObj(min);
+		HistoryObj his2 = new HistoryObj(min);
+		matrix[this.label][desNode.label] = his1;
+		matrix[desNode.label][this.label] = his2;
 		desNode.receiveContactHis(this);
 		return true;
 	}

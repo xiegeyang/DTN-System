@@ -23,6 +23,11 @@ public class MutiThreadsTst {
 		badNode.matrix[5][2].setTimes(10);
 		badNode.matrix[5][3].setTimes(10);
 		badNode.matrix[5][4].setTimes(10);
+		badNode.insecurityNode.matrix[5][1].setTimes(10);
+		badNode.insecurityNode.matrix[5][2].setTimes(10);
+		badNode.insecurityNode.matrix[5][3].setTimes(10);
+		badNode.insecurityNode.matrix[5][4].setTimes(10);
+		
 		
 		ndsMg.testSecrity();
 	}

@@ -10,6 +10,7 @@ public class ShortPath {
 	int size;
 	
 	public void setMatrix(int a , int b, int time){
+		//System.out.println("!!!!!!!!!!!!!!!" + time);
 		matrix[a][b] = time;
 		matrix[b][a] = time;
 		CaluShortPath(fakeDelay,RealDelay);
