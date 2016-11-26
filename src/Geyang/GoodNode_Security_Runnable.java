@@ -229,7 +229,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 							return false;
 							
 					}
-					if(this.matrix[i][j].getTimes() > node.matrix[i][j].getTimes()) {
+					if(this.matrix[i][j].getTimes() < node.matrix[i][j].getTimes()) {
 						System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
 								+ " from " + matrix[i][j].getTimes() + " to " + node.matrix[i][j].getTimes());
 						this.matrix[i][j] = null;

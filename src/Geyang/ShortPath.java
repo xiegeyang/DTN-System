@@ -1,12 +1,15 @@
 package Geyang;
 
+import java.text.DecimalFormat;
+
 public class ShortPath {
+	private static DecimalFormat df2 = new DecimalFormat(".#####");
 	public int label;
 	private int matrix[][];
 	private int originalMatrix[][];
-	int originalDelay[][];
-	int fakeDelay[][];
-	int RealDelay[][];
+	double originalDelay[][];
+	double fakeDelay[][];
+	double RealDelay[][];
 	int size;
 	
 	public void setMatrix(int a , int b, int time){
@@ -23,9 +26,9 @@ public class ShortPath {
 	public ShortPath(int size, HistoryObj _matrix[][], int label){
 		matrix = new int[size][size];
 		originalMatrix = new int[size][size];
-		fakeDelay = new int[size][size];
-		RealDelay = new int[size][size];
-		originalDelay = new int[size][size];
+		fakeDelay = new double[size][size];
+		RealDelay = new double[size][size];
+		originalDelay = new double[size][size];
 		this.label = label;
 		this.size = size;
 		for(int i =0;i<size;i++){
@@ -38,12 +41,12 @@ public class ShortPath {
 		CaluShortPath(fakeDelay,RealDelay);
 	}
 	
-	public void CaluShortPath(int[][] delayMatrix, int[][] realMatrix){
+	public void CaluShortPath(double[][] delayMatrix, double[][] realMatrix){
 		System.out.println("----------" + this.label + "-----------");
-		int[][] prv= new int[size][size];
-		int[][] prv2= new int[size][size];
-		int[][] cur= new int[size][size];
-		int[][] cur2= new int[size][size];
+		double[][] prv= new double[size][size];
+		double[][] prv2= new double[size][size];
+		double[][] cur= new double[size][size];
+		double[][] cur2= new double[size][size];
 		for(int i =0;i<size;i++){
 			for(int j =0;j<size;j++){
 				prv[i][j] = matrix[i][j];
@@ -59,11 +62,11 @@ public class ShortPath {
 			for(int x = 0; x<size;x++){
 				for(int y = 0;y<size;y++){
 					if(x!=y){
-						int min = Integer.MAX_VALUE;
-						int min2 = Integer.MAX_VALUE;
+						double min = Integer.MAX_VALUE;
+						double min2 = Integer.MAX_VALUE;
 						for(int j = 0;j<size;j++){
-							int temp = prv[x][j] + this.matrix[j][y];
-							int temp2 = prv2[x][j] + this.originalMatrix[j][y];
+							double temp = (double)1.0/(double)prv[x][j] + (double)1.0/(double)this.matrix[j][y];
+							double temp2 = (double)1.0/(double)prv2[x][j] + (double)1.0/(double)this.originalMatrix[j][y];
 							if(min>temp){
 								min = temp;
 								min2 = temp2;
@@ -86,14 +89,14 @@ public class ShortPath {
 				delayMatrix[i][j] = cur[i][j];
 				if(realMatrix!=null)
 					realMatrix[i][j] = cur2[i][j];
-				System.out.print(cur[i][j] + " ");
+				System.out.print(df2.format(cur[i][j]) + " ");
 			}
 			System.out.println();
 		}
 		System.out.println("----------real delay------------");
 		for(int i =0;i<size;i++){
 			for(int j =0;j<size;j++){
-				System.out.print(cur2[i][j] + " ");
+				System.out.print(df2.format(cur2[i][j]) + " ");
 			}
 			System.out.println();
 		}
