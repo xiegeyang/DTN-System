@@ -3,7 +3,7 @@ package Geyang;
 import java.text.DecimalFormat;
 
 public class ShortPath {
-	private static DecimalFormat df2 = new DecimalFormat(".#####");
+	private static DecimalFormat df2 = new DecimalFormat("#.########");
 	public int label;
 	private int matrix[][];
 	private int originalMatrix[][];
@@ -61,12 +61,13 @@ public class ShortPath {
 		for(int i =1;i<size;i++){
 			for(int x = 0; x<size;x++){
 				for(int y = 0;y<size;y++){
-					if(x!=y){
-						double min = Integer.MAX_VALUE;
-						double min2 = Integer.MAX_VALUE;
+					//if(x!=y){
+						double min = prv[x][y];
+						double min2 = prv2[x][y];
 						for(int j = 0;j<size;j++){
-							double temp = (double)1.0/(double)prv[x][j] + (double)1.0/(double)this.matrix[j][y];
-							double temp2 = (double)1.0/(double)prv2[x][j] + (double)1.0/(double)this.originalMatrix[j][y];
+							double temp = (double)1.0/(double)prv[x][j] + ((double)1.0/(double)this.matrix[j][y]);
+							//if(x==2&&j==2&&y==2) System.out.println(temp);
+							double temp2 = (double)1.0/(double)prv2[x][j] + ((double)1.0/(double)this.originalMatrix[j][y]);
 							if(min>temp){
 								min = temp;
 								min2 = temp2;
@@ -74,7 +75,7 @@ public class ShortPath {
 						}
 						cur[x][y] = min;
 						cur2[x][y] = min2;
-					}
+					//}
 				}
 			}
 			for(int z =0;z<size;z++){
