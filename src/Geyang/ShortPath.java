@@ -3,7 +3,7 @@ package Geyang;
 import java.text.DecimalFormat;
 
 public class ShortPath {
-	private static DecimalFormat df2 = new DecimalFormat("#.########");
+	private static DecimalFormat df2 = new DecimalFormat("#.######");
 	public int label;
 	private int matrix[][];
 	private int originalMatrix[][];
@@ -90,9 +90,9 @@ public class ShortPath {
 				delayMatrix[i][j] = cur[i][j];
 				if(realMatrix!=null)
 					realMatrix[i][j] = cur2[i][j];
-				System.out.print(df2.format(cur[i][j]) + " ");
+				//System.out.print(df2.format(cur[i][j]) + " ");
 			}
-			System.out.println();
+			//System.out.println();
 		}
 		System.out.println("----------real delay------------");
 		for(int i =0;i<size;i++){

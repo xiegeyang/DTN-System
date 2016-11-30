@@ -107,7 +107,7 @@ public class NodesManger {
 				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable)nodesGroup.get(j);
 				Random random = new Random();
 				int ranTime = random.nextInt(100);
-				if(i==j) ranTime = 10000;
+				if(i==j) ranTime = 1000000;
 				HistoryObj history = new HistoryObj(ranTime);
 				history.signatureA = nodeA.sign(history.data);
 				history.signatureB = nodeB.sign(history.data);
