@@ -36,7 +36,7 @@ public class NodesManger {
 	}
 
 	
-	public NodesManger(int size, int lines, boolean isOneGroup, boolean security){
+	public NodesManger(int size){
 		setSize(size);
 		setLines(lines);
 		nodesGroup = new Vector<>();
@@ -98,6 +98,9 @@ public class NodesManger {
 			node.insecurityNode = node2;
 		}
 		//makeConnection_Security(lines, isOneGroup);
+		
+		
+		
 	}
 	
 	public void randomMatrix(HistoryObj matrix[][]){
@@ -115,6 +118,21 @@ public class NodesManger {
 				matrix[i][j] = history;
 				matrix[j][i] = history2;
 			}
+		}
+	}
+	
+	public void randomAttacks(int attacks){
+		Random ran = new Random();
+		int r = ran.nextInt(size);
+		GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)nodesGroup.get(r);
+		for(int i =0;i<attacks;i++){
+			int row = ran.nextInt(size);
+			int cal = ran.nextInt(size);
+			int t = ran.nextInt(9000)+1000;
+			node.matrix[row][cal].setTimes(t);
+			node.insecurityNode.matrix[row][cal].setTimes(t);
+			System.out.println("Attack " + i +" Created, node " + r + " matrix [" + row + "][" + 
+			cal + "]" + " contact: " + t);
 		}
 	}
 	
