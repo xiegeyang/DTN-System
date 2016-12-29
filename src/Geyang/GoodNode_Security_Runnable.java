@@ -55,8 +55,8 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 	}
 
 	
-	public GoodNode_Security_Runnable(int label, Vector<Node> vec, int numOfNds) {
-		super(label, vec, numOfNds);
+	public GoodNode_Security_Runnable(int label, Vector<Node> vec, int numOfNds, int preference) {
+		super(label, vec, numOfNds,preference);
 		keyGeneration();
 		//insecurityNode = new GoodNode_Runnable(label, )
 		// TODO Auto-generated constructor stub
@@ -91,10 +91,12 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		//System.out.println(" Create Message Label are " + this.label + " and " + desNode.label);		
 		//matrix[this.label][desNode.label] = null;
 		if(historyObj == null){
-			historyObj = new HistoryObj(0);
+			historyObj = new HistoryObj(2);
 		}
 		
 		int times = historyObj.getTimes();
+		if(first)
+			times++;
 		//System.out.println(times);
 		if(!((verify(desNode, historyObj.signatureA, historyObj.data) && 
 				verify(this, historyObj.signatureB, historyObj.data))||
@@ -138,7 +140,7 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 			return false;
 		}
 		
-		if(matrix[this.label][sourceNode.label].getTimes()!= message.getTimes()){
+		if((matrix[this.label][sourceNode.label].getTimes()+1)!= message.getTimes()){
 			System.out.println("2. Malicious intent Attack detect!");
 			setHistory(this,sourceNode,-1);
 			return false;

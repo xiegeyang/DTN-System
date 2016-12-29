@@ -53,9 +53,9 @@ public class ShortPath {
 				prv2[i][j] = originalMatrix[i][j];
 				cur[i][j] = matrix[i][j];
 				cur2[i][j] = originalMatrix[i][j];
-				//System.out.print(matrix[i][j] +" ");
+				System.out.print(matrix[i][j] +" ");
 			}
-			//System.out.println();
+			System.out.println();
 		}
 		//System.out.println("----------new delay------------");
 		for(int i =1;i<size;i++){
@@ -94,21 +94,21 @@ public class ShortPath {
 			}
 			//System.out.println();
 		}
-		System.out.println("----------contact table------------");
-		for(int i =0;i<size;i++){
-			for(int j =0;j<size;j++){
-				System.out.print(df2.format(matrix[i][j]) + " ");
-			}
+		/*/System.out.println("----------contact table------------");
+		//for(int i =0;i<size;i++){
+			//for(int j =0;j<size;j++){
+			//	System.out.print(df2.format(matrix[i][j]) + " ");
+		//	}
 			System.out.println();
-		}
+		}*/
 		System.out.println("----------real delay------------");
 		double ave = 0;
 		for(int i =0;i<size;i++){
 			for(int j =0;j<size;j++){
-				System.out.print(df2.format(cur2[i][j]) + " ");
+				//System.out.print(df2.format(cur2[i][j]) + " ");
 				ave +=cur2[i][j];
 			}
-			System.out.println();
+			//System.out.println();
 		}
 		System.out.println("Ave is : " + ave / (double)(size *size));
 	}

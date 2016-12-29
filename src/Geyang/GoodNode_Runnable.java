@@ -8,12 +8,12 @@ public class GoodNode_Runnable extends Node implements Runnable{
 
 	
 	
-	public GoodNode_Runnable(int label, Vector<Node> vec, int numOfNds){
+	public GoodNode_Runnable(int label, Vector<Node> vec, int numOfNds, int preference){
 		this.label = label;
 		this.connectID = label;
 		this.neighbors = new Vector<>();
 		nodesGroup = vec;
-		
+		this.preference = preference;
 		//randomMatrix(this.matrix);
 		
 		//keyGeneration();

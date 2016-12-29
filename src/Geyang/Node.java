@@ -15,7 +15,7 @@ public abstract class Node {
 	protected Vector<Node> nodesGroup;
 	protected int connectID;
 	public ShortPath sp;
-	
+	public int preference;
 	
 	
 	public void setMsg(Message msg){
@@ -137,14 +137,15 @@ public abstract class Node {
 			System.out.println("Insecurity Node : " + label + ", sending message : " + this.msg 
 					+ ", to Insecurity Node : " + desNode.label);
 			SendContactHis(this.matrix, desNode);
-			sendMatrix(desNode);
+			//sendMatrix(desNode);
 			//System.out.println(this.matrix[this.label][desNode.label].getTimes()+"-----------------------");
-			sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
+			
 			
 		return true;
 	}
 	
 	public boolean sendMatrix(Node desNode){
+		System.out.println("!!!!!!!!!!!!!!!!!!");
 		if(desNode == null){
 			return false;
 		}
@@ -165,11 +166,8 @@ public abstract class Node {
 	
 	public boolean SendContactHis(HistoryObj[][] matrix, Node desNode){
 		
-		int max = Math.max(this.matrix[this.label][desNode.label].getTimes(),this.matrix[desNode.label][this.label].getTimes());
-		max = Math.max(desNode.matrix[this.label][desNode.label].getTimes(), max);
-		max = Math.max(desNode.matrix[desNode.label][this.label].getTimes(), max);
-		HistoryObj his1 = new HistoryObj(max);
-		HistoryObj his2 = new HistoryObj(max);
+		HistoryObj his1 = new HistoryObj(this.matrix[this.label][desNode.label].getTimes()+1);
+		HistoryObj his2 = new HistoryObj(this.matrix[desNode.label][this.label].getTimes()+1);
 		matrix[this.label][desNode.label] = his1;
 		matrix[desNode.label][this.label] = his2;
 		desNode.receiveContactHis(this);
@@ -177,18 +175,9 @@ public abstract class Node {
 	}
 	
 	public boolean receiveContactHis(Node sourceNode){
-		HistoryObj historyObj = matrix[this.label][sourceNode.label];
-		HistoryObj historyObj2 = matrix[this.label][sourceNode.label];
-		if(historyObj == null){
-			historyObj = new HistoryObj(0);
-		}
-		int max = Math.max(this.matrix[this.label][sourceNode.label].getTimes(),this.matrix[sourceNode.label][this.label].getTimes());
-		max = Math.max(sourceNode.matrix[this.label][sourceNode.label].getTimes(), max);
-		max = Math.max(sourceNode.matrix[sourceNode.label][this.label].getTimes(), max);
-		historyObj.setTimes(max);
-		historyObj2.setTimes(max);
-		matrix[this.label][sourceNode.label] = historyObj;
-		matrix[sourceNode.label][this.label] = historyObj2;
+		
+		matrix[this.label][sourceNode.label] = new HistoryObj(this.matrix[this.label][sourceNode.label].getTimes()+1);
+		matrix[sourceNode.label][this.label] = new HistoryObj(this.matrix[sourceNode.label][this.label].getTimes()+1);
 		return true;
 	}
 	
@@ -200,9 +189,10 @@ public abstract class Node {
 			for(int j =0;j<matrix[i].length;j++){
 				//HistoryObj ch =  verifyHistoryObj()
 				if(this.matrix[i][j].getTimes() < neiMatrix[i][j].getTimes()) {
-					System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
-							+ " from " + matrix[i][j].getTimes() + " to " + neiMatrix[i][j].getTimes());
+					//System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
+						//	+ " from " + matrix[i][j].getTimes() + " to " + neiMatrix[i][j].getTimes());
 					this.matrix[i][j].setTimes(neiMatrix[i][j].getTimes());
+					sp.setMatrix(i,j, this.matrix[i][j].getTimes());
 				}	
 			}
 		}

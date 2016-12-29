@@ -42,14 +42,44 @@ public class NodesManger {
 		nodesGroup = new Vector<>();
 		insecurityGroup = new Vector<>();
 		matrix = new HistoryObj[size][size];
+		Random random = new Random();
 		for(int i =0; i<size; i++){
-			
-			GoodNode_Security_Runnable node = new GoodNode_Security_Runnable(i, this.nodesGroup, size);
+			int perference = random.nextInt(99)+1;
+			GoodNode_Security_Runnable node = new GoodNode_Security_Runnable(i, this.nodesGroup, size,perference);
 			nodesGroup.add(node);
-			GoodNode_Runnable inseNode = new GoodNode_Runnable(i, this.insecurityGroup,size);
+			GoodNode_Runnable inseNode = new GoodNode_Runnable(i, this.insecurityGroup,size,perference);
 			insecurityGroup.add(inseNode);
 		}
-		randomMatrix(matrix);
+		setMatrix();
+		
+		setShortPath();
+		for(int i =0;i<size;i++){
+			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
+			GoodNode_Runnable node2= (GoodNode_Runnable)this.insecurityGroup.get(i);
+			node.insecurityNode = node2;
+		}
+		//makeConnection_Security(lines, isOneGroup);
+		
+		
+		
+	}
+	
+	public void setShortPath(){
+		ShortPath sp = new ShortPath(size,matrix,1);
+		ShortPath inseSp = new ShortPath(size, matrix,2);
+		for(int i =0;i<size;i++){
+			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
+			node.sp = sp;
+		}
+		for(int i =0;i<size;i++){
+			GoodNode_Runnable node = (GoodNode_Runnable)this.insecurityGroup.get(i);
+			node.sp = inseSp;
+		}
+	}
+	
+	public void setMatrix(){
+		//randomMatrix(matrix);
+		initialMatrix(matrix);
 		for(int i =0;i<matrix.length;i++){
 			for(int j =0;j<matrix[0].length;j++){
 				HistoryObj obj = matrix[i][j];
@@ -81,26 +111,6 @@ public class NodesManger {
 			}
 			
 		}
-		
-		ShortPath sp = new ShortPath(size,matrix,1);
-		ShortPath inseSp = new ShortPath(size, matrix,2);
-		for(int i =0;i<size;i++){
-			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
-			node.sp = sp;
-		}
-		for(int i =0;i<size;i++){
-			GoodNode_Runnable node = (GoodNode_Runnable)this.insecurityGroup.get(i);
-			node.sp = inseSp;
-		}
-		for(int i =0;i<size;i++){
-			GoodNode_Security_Runnable node = (GoodNode_Security_Runnable)this.nodesGroup.get(i);
-			GoodNode_Runnable node2= (GoodNode_Runnable)this.insecurityGroup.get(i);
-			node.insecurityNode = node2;
-		}
-		//makeConnection_Security(lines, isOneGroup);
-		
-		
-		
 	}
 	
 	public void randomMatrix(HistoryObj matrix[][]){
@@ -110,6 +120,24 @@ public class NodesManger {
 				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable)nodesGroup.get(j);
 				Random random = new Random();
 				int ranTime = random.nextInt(100-2) + 2;
+				if(i==j) ranTime = 1000000;
+				HistoryObj history = new HistoryObj(ranTime);
+				history.signatureA = nodeA.sign(history.data);
+				history.signatureB = nodeB.sign(history.data);
+				HistoryObj history2 = history.clone();
+				matrix[i][j] = history;
+				matrix[j][i] = history2;
+			}
+		}
+	}
+	
+	public void initialMatrix(HistoryObj matrix[][]){
+		for(int i = 0 ;i<matrix.length;i++){
+			for(int j =0;j<matrix[0].length;j++){
+				GoodNode_Security_Runnable nodeA = (GoodNode_Security_Runnable)nodesGroup.get(i);
+				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable)nodesGroup.get(j);
+				
+				int ranTime = 2;
 				if(i==j) ranTime = 1000000;
 				HistoryObj history = new HistoryObj(ranTime);
 				history.signatureA = nodeA.sign(history.data);
