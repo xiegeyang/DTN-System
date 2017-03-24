@@ -13,7 +13,7 @@ import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Security{
+public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Security, Runnable{
 	
 	protected KeyPair pair;
 	protected PrivateKey privateKey;
@@ -347,20 +347,20 @@ public class GoodNode_Security_Runnable extends GoodNode_Runnable implements Sec
 		GoodNode_Security_Runnable randomNode = null;
 		while(true){
 			try{
-				Thread.sleep((int)( Math.random() * 10000));
 				if(true){
 					//i++;
-					randomNode = (GoodNode_Security_Runnable)randomNode();
-					
-					if(randomNode!=null && randomNode!=this){
-						//if(!ChangeContact(10))
-						if(sendMessage(randomNode))
-							sendMatrix(randomNode);
-							
+					if((int)(Math.random()*100)+this.preference > 90){
+						randomNode = (GoodNode_Security_Runnable)randomNode();
 						
+						if(randomNode!=null && randomNode!=this){
+							//if(!ChangeContact(10))
+							if(sendMessage(randomNode))
+								sendMatrix(randomNode);
+						}
 					}
-				}
 					
+				}
+				Thread.sleep((int)(nodesGroup.size()*1000));	
 			}catch(Exception e){
 				 e.printStackTrace();
 			}

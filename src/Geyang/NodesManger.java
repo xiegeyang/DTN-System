@@ -138,7 +138,7 @@ public class NodesManger {
 				GoodNode_Security_Runnable nodeB = (GoodNode_Security_Runnable)nodesGroup.get(j);
 				
 				int ranTime = 2;
-				if(i==j) ranTime = 1000000;
+				if(i==j) ranTime = 100;
 				HistoryObj history = new HistoryObj(ranTime);
 				history.signatureA = nodeA.sign(history.data);
 				history.signatureB = nodeB.sign(history.data);
@@ -207,7 +207,7 @@ public class NodesManger {
 		}*/
 		
 		for(int i =0;i<nodesGroup.size();i++ ){
-			new Thread((GoodNode_Runnable)nodesGroup.elementAt(i)).start();
+			new Thread((GoodNode_Security_Runnable)nodesGroup.elementAt(i)).start();
 		}
 	}
 	
@@ -238,7 +238,13 @@ public class NodesManger {
 		}*/
 		
 		for(int i =0;i<nodesGroup.size();i++ ){
-			new Thread((GoodNode_Runnable)nodesGroup.elementAt(i)).start();
+			new Thread((GoodNode_Security_Runnable)nodesGroup.elementAt(i)).start();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	

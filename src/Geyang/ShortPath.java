@@ -16,6 +16,8 @@ public class ShortPath {
 		//System.out.println("!!!!!!!!!!!!!!!" + time);
 		matrix[a][b] = time;
 		matrix[b][a] = time;
+		//matrix[a][b] = matrix[a][b]<time?time:matrix[a][b];
+		//matrix[b][a] = matrix[b][a]<time?time:matrix[a][b];
 		CaluShortPath(fakeDelay,RealDelay);
 	}
 	
@@ -42,7 +44,8 @@ public class ShortPath {
 	}
 	
 	public void CaluShortPath(double[][] delayMatrix, double[][] realMatrix){
-		System.out.println("----------" + this.label + "-----------");
+		String str_label = (this.label==1)? "Security":"Insecurity";
+		System.out.println("----------" + str_label + "-----------");
 		double[][] prv= new double[size][size];
 		double[][] prv2= new double[size][size];
 		double[][] cur= new double[size][size];

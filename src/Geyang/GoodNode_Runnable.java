@@ -3,7 +3,7 @@ package Geyang;
 import java.util.*;
 
 
-public class GoodNode_Runnable extends Node implements Runnable{
+public class GoodNode_Runnable extends Node{
 	
 
 	
@@ -14,12 +14,13 @@ public class GoodNode_Runnable extends Node implements Runnable{
 		this.neighbors = new Vector<>();
 		nodesGroup = vec;
 		this.preference = preference;
+		System.out.println(this.label + " preference : " + this.preference);
 		//randomMatrix(this.matrix);
 		
 		//keyGeneration();
 	}
 
-	public void run(){
+	/*public void run(){
 		while(true){
 			try{
 				Thread.sleep((int)( Math.random() * 10000));
@@ -30,10 +31,15 @@ public class GoodNode_Runnable extends Node implements Runnable{
 			}
 			
 		}
-	}
+	}*/
 	
 	protected GoodNode_Security_Runnable randomNode(){
-		int index = (int)(Math.random() * nodesGroup.size());
+		int index = 0;
+		do{
+			index = (int)(Math.random() * nodesGroup.size());
+		}
+		while((nodesGroup.elementAt(index).preference + (int)(Math.random()*100))<90 
+				&& nodesGroup.elementAt(index) == this && nodesGroup.elementAt(index) == null);
 		return nodesGroup.elementAt(index) == this ? null: (GoodNode_Security_Runnable)nodesGroup.elementAt(index);
 	}
 	

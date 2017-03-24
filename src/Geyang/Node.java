@@ -23,21 +23,8 @@ public abstract class Node {
 		encriptMsg(msg);
 	}
 	
-	public Node(){
-		neighbors = new Vector<>();
-		//frequency = new HashMap<>();
-		//matrix = new HashMap<>();
-		nodesGroup = new Vector<>();
-	}
 	
-	public Node(int label){
-		this.label = label;
-		this.connectID = label;
-		neighbors = new Vector<>();
-		//frequency = new HashMap<>();
-		//matrix = new HashMap<>();
-		//nodesGroup = new Vector<>();
-	}
+	
 	
 	public void disConnect(Node newNode){
 		
@@ -150,7 +137,7 @@ public abstract class Node {
 			return false;
 		}
 		if(!desNode.reseiveMatrix(this.matrix, this)) return false;
-		//sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
+		sp.setMatrix(this.label, desNode.label, this.matrix[this.label][desNode.label].getTimes());
 		return true;
 	}
 	
@@ -192,7 +179,7 @@ public abstract class Node {
 					//System.out.println("Node : " + label + " has changed the matrix " + i + " " + j
 						//	+ " from " + matrix[i][j].getTimes() + " to " + neiMatrix[i][j].getTimes());
 					this.matrix[i][j].setTimes(neiMatrix[i][j].getTimes());
-					sp.setMatrix(i,j, this.matrix[i][j].getTimes());
+					//sp.setMatrix(i,j, this.matrix[i][j].getTimes());
 				}	
 			}
 		}
